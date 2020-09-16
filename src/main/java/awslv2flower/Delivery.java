@@ -2,6 +2,10 @@ package awslv2flower;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
+
+import awslv2flower.external.Review;
+import awslv2flower.external.ReviewService;
+
 import java.util.List;
 
 @Entity
@@ -14,6 +18,8 @@ public class Delivery {
     private Long orderId;
     private String status;
 
+    
+    
     @PostUpdate
     public void onPostUpdate(){
 
@@ -22,6 +28,14 @@ public class Delivery {
             Shipped shipped = new Shipped();
             BeanUtils.copyProperties(this, shipped);
             shipped.publishAfterCommit();
+
+            awslv2flower.external.Review review = new  awslv2flower.external.Review();
+            // mappings goes here
+            review.setOrderId(this.getId());
+            review.setStatus("Shipped");
+            DeliveryApplication.applicationContext.getBean(awslv2flower.external.ReviewService.class).reviewRequest(review);
+
+
 
         }else if (this.getStatus().equals("DeliveryCancelled")){
 

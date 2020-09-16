@@ -38,6 +38,10 @@ logging:
 server:
   port: 8082
 ---
+api:
+  url:
+    review: http://localhost:8085
+---
 
 spring:
   profiles: docker
@@ -62,3 +66,6 @@ spring:
         event-out:
           destination: awslv2flower
           contentType: application/json
+api:
+  url:
+    review: http://admin19-flower-review:8080
